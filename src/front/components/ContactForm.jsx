@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { postNewContact } from "../services/contact.js";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { postNewContact } from "../service/contact.js";
 
-export const AddNewContact = () => {
+export const ContactForm = () => {
+
   const { dispatch } = useGlobalReducer();
   const userName = "valentina";
   const host = `https://playground.4geeks.com/contact/agendas`;
@@ -67,7 +67,7 @@ export const AddNewContact = () => {
       await addUser();
       const contactList = await postNewContact(userData);
       if (contactList) {
-        dispatch({ type: "SET_CONTACTS", payload: contactList }); // Ajusta el tipo si tienes definido otro
+        dispatch({ type: "SET_CONTACTS", payload: contactList }); 
       }
       setContactName("");
       setContactPhoneNumber("");
@@ -89,3 +89,5 @@ export const AddNewContact = () => {
     </form>
   );
 };
+
+

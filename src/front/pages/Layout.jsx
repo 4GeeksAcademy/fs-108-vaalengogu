@@ -17,13 +17,15 @@ export const Layout = () => {
        get()
     },[])
     return (
-    
+    <div className="d-flex flex-column min-vh-100">
+
         <ScrollToTop>
             <Navbar />
                 <Outlet />
             <Footer />
         </ScrollToTop>
        
+    </div>
 
     )
 } 

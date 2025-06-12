@@ -10,6 +10,7 @@ import { Planets } from "./components/Planets.jsx";
 import { StarShips } from "./components/StarShips.jsx";
 import { Contacts } from "./components/Contacts.jsx";
 import Favorites from "./components/Favorites.jsx";
+import { ContactForm } from "./components/ContactForm.jsx";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +21,7 @@ export const router = createBrowserRouter(
       <Route path="/starships" element={<StarShips />} />
       <Route path="/contacts" element={<Contacts/>} />
       <Route path="/favorites" element={<Favorites/>} />
+      <Route path="/contact-form" element={<ContactForm/>} />
     </Route>
   )
 );

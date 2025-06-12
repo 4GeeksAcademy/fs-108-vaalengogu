@@ -1,19 +1,15 @@
-export const Character = ()=> {
-    return (
-        <div className="container">
-            <h1>Character</h1>
-        </div>
-    )
-}
-import React, { useEffect, useState } from "react";
+import {
+  useState, useEffect
+} from "react"
 
-const CharacterGallery = () => {
+
+export const Character = () => {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchCharacters = async () => {
     try {
-      const res = await fetch("https://swapi.dev/api/people/");
+      const res = await fetch("https://swapi.tech/api/people/");
       const data = await res.json();
       setCharacters(data.results);
     } catch (error) {
@@ -36,9 +32,7 @@ const CharacterGallery = () => {
           {characters.map((character, index) => (
             <div className="card" key={index}>
               <h3>{character.name}</h3>
-              <p><strong>Altura:</strong> {character.height} cm</p>
-              <p><strong>Género:</strong> {character.gender}</p>
-              <p><strong>Nacimiento:</strong> {character.birth_year}</p>
+            ///boton que sea ver detalles
             </div>
           ))}
         </div>
@@ -47,4 +41,4 @@ const CharacterGallery = () => {
   );
 };
 
-export default CharacterGallery;
+
