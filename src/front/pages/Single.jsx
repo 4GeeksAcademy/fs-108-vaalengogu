@@ -26,7 +26,7 @@ export const Single = props => {
         </span>
       </Link>
     </div>
-  );
+  ); 
 };
 
 // Use PropTypes to validate the props passed to this component, ensuring reliable behavior.
