@@ -5,6 +5,7 @@ export const getContact = async () => {
       `https://playground.4geeks.com/contact/agendas/${user}`
     );
     if (response.status === 404) {
+      //crear agenda
     }
     const data = await response.json();
     console.log(data);
@@ -15,32 +16,24 @@ export const getContact = async () => {
   }
 };
 
-export const postNewContact = async (dataToSend) => {
+
+export const addContact = async (dataToSend) => {
   try {
     const response = await fetch(
       "https://playground.4geeks.com/contact/agendas/valentina/contacts",
-      
       {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend),
       }
     );
 
     if (!response.ok) {
-      throw new Error("Error al obtener los contactos");
+      throw new Error("Error al crear contacto");
     }
 
-    const contactos = await response.json();
-    console.log("Contactos autorizados:", contactos);
+    return;
   } catch (error) {
-    console.error("Error al obtener los contactos:", error);
+    console.error("Error al crear contacto:", error);
   }
 };
-
-// fecht con metodo POST, enviandole la infomacion del body para crear el contacto en la API
-
-// si todo va bien tengo que ejecutar el getContact para que me traiga de vuelta todos los contactos autoriados
