@@ -1,21 +1,46 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { addContact, getContact } from "../service/contact.js";
+import { Link, useNavigate } from "react-router-dom";
+import { addContact, getContact, deleteContact } from "../service/contact.js";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import pingui from "../assets/img/pingui.jpg";
 
 
+
 export const Contacts = () => {
   const { store, dispatch } = useGlobalReducer()
+  const navigate = useNavigate()
 
 
 
-  const handleDelete = (id) =>{
- //llamar a la funcion del fetch delete que esta en el contact.js (aun no creada)
- // llamo a la funcion getcontact que tengo en .js y se lo asigno a una constante (data)
- // con lo que tengo en data tengo que ejecutar el dispach para actualizar el store
- //
-  }
+  const handleEdit = async (item) => {
+
+    dispatch({ type: "currentContact", payload: item });
+    dispatch({ type: "isEdit", payload: true })
+
+    navigate("/add-contact")
+  };
+
+
+
+  const handleDelete = async (id) => {
+    try {
+      const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este contacto?");
+      if (!confirmDelete) return;
+
+      const result = await deleteContact(id);
+
+      if (result) {
+        console.log("Contacto eliminado correctamente");
+        const updatedContacts = await getContact();
+        dispatch({ type: "contacts", payload: updatedContacts });
+      } else {
+        console.warn("No se pudo eliminar el contacto");
+      }
+
+    } catch (error) {
+      console.error("Error al eliminar el contacto:", error);
+    }
+  };
 
   useEffect(() => {
     const get = async () => {
@@ -23,6 +48,8 @@ export const Contacts = () => {
       dispatch({ type: 'contacts', payload: data })
     }
     get()
+    dispatch ({ type: "currentContact", payload: {}})
+    dispatch ({ type: "isEdit", payload: false})
   }, [])
 
   return (
@@ -52,10 +79,10 @@ export const Contacts = () => {
               </div>
               <div className="col-md-2 mt-3" >
 
-                <span className="mx-3" >
+                <span onClick={() => handleEdit(item)} className="mx-3" >
                   <i className="fa-solid fa-pen-to-square fa-2xl text-primary"></i>
                 </span>
-                <span onClick={ () => handleDelete(item.id)}>
+                <span onClick={() => handleDelete(item.id)}>
                   <i className="fa-solid fa-trash fa-2xl text-danger" ></i>
                 </span>
               </div>

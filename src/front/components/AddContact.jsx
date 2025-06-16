@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { addContact } from "../service/contact.js"
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 
 export const AddContact = () => {
+    const { store, dispatch } = useGlobalReducer()
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -12,14 +14,27 @@ export const AddContact = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newContact = {name, email, phone, address} ;
+        const newContact = { name, email, phone, address };
         await addContact(newContact);
         navigate("/contacts");
     };
 
+    useEffect(() => {
+        if (store.isEdit) {
+            //tengo que ponerle a todos los [] los valores que tengo 
+            const contacto = store.currentContact;
+            if (contacto) {
+                setName(contacto.name);
+                setPhone(contacto.phone);
+                setEmail(contacto.email);
+                setAddress(contacto.address);
+            }
+        }
+    }, [])
+
     return (
         <div className="container py-4">
-            <h2>Agregar Contacto</h2>
+            <h2>{store.isEdit ? "Editar perfil" : "Agregar contacto" } </h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label className="form-label">Nombre</label>

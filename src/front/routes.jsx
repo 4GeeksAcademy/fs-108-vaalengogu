@@ -13,6 +13,7 @@ import Favorites from "./components/Favorites.jsx";
 import {AddContact} from "./components/AddContact.jsx";
 
 
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>}>
@@ -23,7 +24,7 @@ export const router = createBrowserRouter(
       <Route path="/contacts" element={<Contacts />} />
       <Route path="/favorites" element={<Favorites />} />
       <Route path="/add-contact" element={<AddContact />} />
-
+      
     </Route>
   )
 );

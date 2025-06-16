@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import descarga from "../assets/img/descarga.jpg";
 
 export const Navbar = () => {
 
