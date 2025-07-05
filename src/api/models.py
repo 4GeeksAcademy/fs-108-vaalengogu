@@ -5,12 +5,12 @@ db = SQLAlchemy()
 
 
 class Users(db.Model):
-    id = db.Colum(db.Integer, primary_key=True)
-    email = db.Colum(db.String(120), unique=True, nullable=False)
-    password = db.Colum(db.String(80), unique=False, nullable=False)
-    is_active = db.Colum(db.Boolean(), unique=False, nullable=False)
-    first_name = db.Colum(db.String(),unique=False, nullable=False)
-    last_name = db.Colum(db.String(),unique=False, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(80), unique=False, nullable=False)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    first_name = db.Column(db.String(),unique=False, nullable=False)
+    last_name = db.Column(db.String(),unique=False, nullable=False)
 
     def _repr_(self):
         return f'<Users {self.email}>'
