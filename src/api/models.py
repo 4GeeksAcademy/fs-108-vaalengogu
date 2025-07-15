@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 
 db = SQLAlchemy()
-
+ 
 class Users(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)

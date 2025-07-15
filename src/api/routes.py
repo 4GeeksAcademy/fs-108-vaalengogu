@@ -8,7 +8,7 @@ from api.models import db, Users, Followers, Posts, Comments, Media, Characters,
 
 
 api = Blueprint('api', __name__)
-CORS(api) # Allow CORS requests to this API
+CORS(api) # Allow CORS requests to this API 
 
 
 @api.route('/hello', methods=['POST', 'GET'])
