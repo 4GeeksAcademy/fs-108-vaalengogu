@@ -1,28 +1,44 @@
 import { Link } from "react-router-dom";
-import descarga from "../assets/img/descarga.jpg";
+import logo from "../assets/img/logo.jpg";
 
 export const Navbar = () => {
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div className="container">
+        <Link to="/" className="navbar-brand">
+          <img src={logo} alt="Logo" style={{ height: "60px" }} />
+        </Link>
 
-	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">Logo</span>
-				</Link>
-				<div className="ml-auto">
-					<Link to="/planets">
-					<span className="navbar-brand mb-0 h1">Planets</span></Link>
-					<Link to="/character">
-					<span className="navbar-brand mb-0 h1">Character</span></Link>
-					<Link to="/starships">
-					<span className="navbar-brand mb-0 h1">StarShips</span></Link>
-					<Link to="/contacts">
-					<span className="navbar-brand mb-0 h1">Contacts</span></Link>
-					<Link to="/demo"> 
-						<button className="btn btn-primary">Favoritos</button>
-					</Link>
-				</div>
-			</div>
-		</nav>
-	);
+        <div className="collapse navbar-collapse justify-content-end">
+          <ul className="navbar-nav mb-2 mb-lg-0">
+            <li className="nav-item mx-2">
+              <Link to="/planets" className="nav-link">
+                Planets
+              </Link>
+            </li>
+            <li className="nav-item mx-2">
+              <Link to="/character" className="nav-link">
+                Character
+              </Link>
+            </li>
+            <li className="nav-item mx-2">
+              <Link to="/starships" className="nav-link">
+                StarShips
+              </Link>
+            </li>
+            <li className="nav-item mx-2">
+              <Link to="/contacts" className="nav-link">
+                Contacts
+              </Link>
+            </li>
+            <li className="nav-item mx-2">
+              <Link to="/demo">
+                <button type="button" className="btn btn-dark">Favoritos</button>
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
 };
