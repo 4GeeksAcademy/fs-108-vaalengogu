@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import { FavoritesContext } from "./FavoritesContext.jsx"; 
 
 export const Planets = () => {
   const [planets, setPlanets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { favorites, toggleFavorite } = useContext(FavoritesContext); 
 
   useEffect(() => {
     const fetchPlanets = async () => {
@@ -11,7 +13,6 @@ export const Planets = () => {
         const res = await fetch("https://www.swapi.tech/api/planets");
         const data = await res.json();
 
-      
         const planetsWithDetails = await Promise.all(
           data.results.map(async (planet) => {
             const detailRes = await fetch(`https://www.swapi.tech/api/planets/${planet.uid}`);
@@ -43,6 +44,8 @@ export const Planets = () => {
       <div className="row g-4">
         {planets.map((planet) => {
           const desc = `Clima: ${planet.properties.climate}, Terreno: ${planet.properties.terrain}, Población: ${planet.properties.population}`;
+          const isFavorite = favorites.some(fav => fav.id === planet.uid && fav.type === "planet");
+
           return (
             <div key={planet.uid} className="col-md-4">
               <div className="card h-100 shadow-sm bg-dark text-white border-secondary">
@@ -55,7 +58,12 @@ export const Planets = () => {
                   >
                     Ver detalles
                   </Link>
-                  <button className="btn btn-outline-danger">
+                  <button
+                    className={`btn ${isFavorite ? "btn-danger" : "btn-outline-danger"}`}
+                    onClick={() =>
+                      toggleFavorite({ id: planet.uid, name: planet.name, type: "planet" })
+                    }
+                  >
                     <i className="fa-solid fa-heart"></i>
                   </button>
                 </div>
