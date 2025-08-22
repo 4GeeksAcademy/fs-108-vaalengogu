@@ -1,105 +1,59 @@
-//importar
-// 
-// card con datos e imagen
-//obtener los datos de la api (https://www.swapi.tech/api/people/1)
+import React, { useEffect, useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FavoritesContext } from "./FavoritesContext.jsx";
 
-
-import React, { useEffect, useState } from "react";
-
-const CharactersList = () => {
-  const [characters, setCharacters] = useState([]);
-  const [details, setDetails] = useState({});
+export const CharacterDetails = () => {
+  const { uid } = useParams();
+  const [character, setCharacter] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { favorites, addFavorite, removeFavorite } = useContext(FavoritesContext);
 
   useEffect(() => {
-    fetch("https://www.swapi.tech/api/people/")
-      .then((res) => res.json())
-      .then((data) => {
-        setCharacters(data.results);
+    const fetchCharacter = async () => {
+      try {
+        const res = await fetch(`https://www.swapi.tech/api/people/${uid}`);
+        const data = await res.json();
+        setCharacter(data.result.properties);
+      } catch (error) {
+        console.error("Error al obtener personaje:", error);
+      } finally {
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+      }
+    };
+    fetchCharacter();
+  }, [uid]);
 
-  const handleShowDetails = async (uid) => {
-    if (details[uid]) {
-      setDetails((prev) => {
-        const newDetails = { ...prev };
-        delete newDetails[uid];
-        return newDetails;
-      });
-      return;
-    }
-    const res = await fetch(`https://www.swapi.tech/api/people/${uid}`);
-    const data = await res.json();
-    setDetails((prev) => ({
-      ...prev,
-      [uid]: data.result.properties,
-    }));
-  };
+  if (loading) return <p className="text-center mt-5 text-white">Cargando...</p>;
+  if (!character) return <p className="text-center mt-5 text-white">Personaje no encontrado</p>;
 
-  if (loading) return <p>Cargando personajes...</p>;
-
-  // Puedes cambiar esta URL por cualquier imagen que prefieras
-  const getCharacterImage = (uid) =>
-    `https://starwars-visualguide.com/assets/img/characters/${uid}.jpg`;
+  const isFavorite = favorites.some(fav => fav.uid === uid);
 
   return (
-    <div className="container py-4">
-      <h2>Personajes de Star Wars</h2>
-      <div className="row">
-        {characters.map((character) => (
-          <div className="col-md-4 mb-3" key={character.uid}>
-            <div className="card h-100">
-              <img
-                src={getCharacterImage(character.uid)}
-                alt={character.name}
-                className="card-img-top"
-                style={{ objectFit: "cover", height: "300px" }}
-                onError={e => e.target.src = "https://starwars-visualguide.com/assets/img/placeholder.jpg"}
-              />
-              <div className="card-body">
-                <h5 className="card-title">{character.name}</h5>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => handleShowDetails(character.uid)}
-                >
-                  {details[character.uid] ? "Ocultar detalles" : "Ver detalles"}
-                </button>
-                {details[character.uid] && (
-                  <div className="mt-3">
-                    <ul className="list-group list-group-flush">
-                      <li className="list-group-item">
-                        <strong>Altura:</strong> {details[character.uid].height}
-                      </li>
-                      <li className="list-group-item">
-                        <strong>Peso:</strong> {details[character.uid].mass}
-                      </li>
-                      <li className="list-group-item">
-                        <strong>Color de cabello:</strong> {details[character.uid].hair_color}
-                      </li>
-                      <li className="list-group-item">
-                        <strong>Color de piel:</strong> {details[character.uid].skin_color}
-                      </li>
-                      <li className="list-group-item">
-                        <strong>Color de ojos:</strong> {details[character.uid].eye_color}
-                      </li>
-                      <li className="list-group-item">
-                        <strong>Año de nacimiento:</strong> {details[character.uid].birth_year}
-                      </li>
-                      <li className="list-group-item">
-                        <strong>Género:</strong> {details[character.uid].gender}
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="container py-5">
+      <h2 className="text-warning mb-4">{character.name}</h2>
+      <ul className="list-group mb-3">
+        <li className="list-group-item">Altura: {character.height}</li>
+        <li className="list-group-item">Peso: {character.mass}</li>
+        <li className="list-group-item">Color de cabello: {character.hair_color}</li>
+        <li className="list-group-item">Color de piel: {character.skin_color}</li>
+        <li className="list-group-item">Color de ojos: {character.eye_color}</li>
+        <li className="list-group-item">Año de nacimiento: {character.birth_year}</li>
+        <li className="list-group-item">Género: {character.gender}</li>
+      </ul>
+      <button
+        className={`btn ${isFavorite ? "btn-danger" : "btn-outline-danger"} me-2`}
+        onClick={() => (isFavorite ? removeFavorite(uid) : addFavorite({ uid, type: "character", name: character.name }))}
+      >
+        <i className="fa-solid fa-heart"></i> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
+      </button>
+      <button className="btn btn-secondary" onClick={() => navigate(-1)}>
+        Volver
+      </button>
     </div>
   );
 };
 
-export default CharactersList;
+export default CharacterDetails;
+
+

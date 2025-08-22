@@ -1,99 +1,60 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { addContact, getContact, deleteContact } from "../service/contact.js";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import pingui from "../assets/img/pingui.jpg";
+import React, { useContext, useState } from "react";
+import { ContactsContext } from "./ContactsContext.jsx";
 
+const Contacts = () => {
+  const { contacts, addContact, editContact, deleteContact } = useContext(ContactsContext);
+  const [newContact, setNewContact] = useState({ id: "", name: "", email: "" });
 
-
-export const Contacts = () => {
-  const { store, dispatch } = useGlobalReducer()
-  const navigate = useNavigate()
-
-
-
-  const handleEdit = async (item) => {
-
-    dispatch({ type: "currentContact", payload: item });
-    dispatch({ type: "isEdit", payload: true })
-
-    navigate("/add-contact")
+  const handleAdd = () => {
+    if (!newContact.name || !newContact.email) return;
+    addContact({ ...newContact, id: Date.now().toString() });
+    setNewContact({ id: "", name: "", email: "" });
   };
-
-
-
-  const handleDelete = async (id) => {
-    try {
-      const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este contacto?");
-      if (!confirmDelete) return;
-
-      const result = await deleteContact(id);
-
-      if (result) {
-        console.log("Contacto eliminado correctamente");
-        const updatedContacts = await getContact();
-        dispatch({ type: "contacts", payload: updatedContacts });
-      } else {
-        console.warn("No se pudo eliminar el contacto");
-      }
-
-    } catch (error) {
-      console.error("Error al eliminar el contacto:", error);
-    }
-  };
-
-  useEffect(() => {
-    const get = async () => {
-      const data = await getContact()
-      dispatch({ type: 'contacts', payload: data })
-    }
-    get()
-    dispatch ({ type: "currentContact", payload: {}})
-    dispatch ({ type: "isEdit", payload: false})
-  }, [])
 
   return (
-    <div className="container py-4">
-      <h1>Contacts</h1>
-      <div className="row mb-3">
-        <Link to="/add-contact" className="btn btn-primary">
-          Add Contact
-        </Link>
+    <div className="container py-5">
+      <h1 className="text-center text-warning mb-4">Contacts</h1>
+      <div className="mb-4 d-flex gap-2">
+        <input
+          type="text"
+          placeholder="Nombre"
+          className="form-control"
+          value={newContact.name}
+          onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          className="form-control"
+          value={newContact.email}
+          onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+        />
+        <button className="btn btn-primary" onClick={handleAdd}>
+          Añadir
+        </button>
       </div>
-
-      <div className="row mb-3">
-        {store.contacts.map((item) =>
-
-          <div key={item.id} className="card mb-3">
-            <div className="row g-0">
-              <div className="col-md-4">
-                <img src={pingui} className="img-fluid rounded-start" alt="..." />
-              </div>
-              <div className="col-md-6">
-                <div className="card-body">
-                  <h5 className="card-title">{item.name}</h5>
-                  <p className="card-text">{item.phone}</p>
-                  <p className="card-text">{item.email}</p>
-                  <p className="card-text">{item.address}</p>
+      <div className="row g-3">
+        {contacts.map((c) => (
+          <div key={c.id} className="col-12 col-md-6 col-lg-4">
+            <div className="card shadow-sm bg-dark text-white border-secondary">
+              <div className="card-body d-flex flex-column justify-content-between">
+                <h5>{c.name}</h5>
+                <p>{c.email}</p>
+                <div className="d-flex justify-content-between">
+                  <button className="btn btn-sm btn-warning" onClick={() => editContact(c.id, { ...c, name: prompt("Nuevo nombre:", c.name) || c.name })}>
+                    Editar
+                  </button>
+                  <button className="btn btn-sm btn-danger" onClick={() => deleteContact(c.id)}>
+                    Eliminar
+                  </button>
                 </div>
               </div>
-              <div className="col-md-2 mt-3" >
-
-                <span onClick={() => handleEdit(item)} className="mx-3" >
-                  <i className="fa-solid fa-pen-to-square fa-2xl text-primary"></i>
-                </span>
-                <span onClick={() => handleDelete(item.id)}>
-                  <i className="fa-solid fa-trash fa-2xl text-danger" ></i>
-                </span>
-              </div>
-
             </div>
           </div>
-
-        )}
-
+        ))}
       </div>
-
     </div>
   );
 };
+
+export default Contacts;

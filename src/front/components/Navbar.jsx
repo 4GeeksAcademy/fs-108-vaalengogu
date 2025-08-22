@@ -3,13 +3,25 @@ import logo from "../assets/img/logo.jpg";
 
 export const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
       <div className="container">
         <Link to="/" className="navbar-brand">
           <img src={logo} alt="Logo" style={{ height: "60px" }} />
         </Link>
 
-        <div className="collapse navbar-collapse justify-content-end">
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul className="navbar-nav mb-2 mb-lg-0">
             <li className="nav-item mx-2">
               <Link to="/planets" className="nav-link">
@@ -32,8 +44,10 @@ export const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item mx-2">
-              <Link to="/demo">
-                <button type="button" className="btn btn-dark">Favoritos</button>
+              <Link to="/favorites">
+                <button type="button" className="btn btn-outline-warning">
+                  Favoritos
+                </button>
               </Link>
             </li>
           </ul>

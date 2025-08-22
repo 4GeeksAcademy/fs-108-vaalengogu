@@ -1,73 +1,69 @@
-import React from "react";
-import tatooine from "../../assets/img/tatooine.jpg";
-import alderaan from "../../assets/img/alderaan.jpg";
-import hoth from "../../assets/img/hoth.jpg";
-import dagobah from "../../assets/img/dagobah.jpg";
-import endor from "../../assets/img/endor.jpg";
-
-const planets = [
-  {
-    name: "Tatooine",
-    image: tatooine,
-    description: "Un planeta desértico, hogar de Luke Skywalker y Anakin Skywalker.",
-  },
-  {
-    name: "Alderaan",
-    image: alderaan,
-    description: "Un planeta pacífico destruido por la Estrella de la Muerte.",
-  },
-  {
-    name: "Hoth",
-    image: hoth,
-    description: "Un planeta helado, ubicación de la Base Eco de la Alianza Rebelde.",
-  },
-  {
-    name: "Dagobah",
-    image: dagobah,
-    description: "Un planeta pantanoso donde Yoda se exilió.",
-  },
-  {
-    name: "Endor",
-    image: endor,
-    description: "Una luna boscosa, hogar de los Ewoks.",
-  },
-];
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export const Planets = () => {
+  const [planets, setPlanets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlanets = async () => {
+      try {
+        const res = await fetch("https://www.swapi.tech/api/planets");
+        const data = await res.json();
+
+      
+        const planetsWithDetails = await Promise.all(
+          data.results.map(async (planet) => {
+            const detailRes = await fetch(`https://www.swapi.tech/api/planets/${planet.uid}`);
+            const detailData = await detailRes.json();
+            return {
+              uid: planet.uid,
+              name: planet.name,
+              properties: detailData.result.properties,
+            };
+          })
+        );
+
+        setPlanets(planetsWithDetails);
+      } catch (error) {
+        console.error("Error al obtener planetas:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlanets();
+  }, []);
+
+  if (loading) return <p className="text-center mt-5 text-white">Cargando planetas...</p>;
+
   return (
-    <div
-      className="container py-5"
-      style={{ backgroundColor: "#0b0b0b", minHeight: "100vh" }}
-    >
-      <h1 className="text-center mb-5 text-warning">Planetas</h1>
+    <div className="container py-5">
+      <h1 className="text-center text-warning mb-4">Planetas</h1>
       <div className="row g-4">
-        {planets.map((planet, index) => (
-          <div key={index} className="col-12 col-md-6 col-lg-4">
-            <div className="card h-100 shadow-sm bg-dark text-white border-secondary hover-card">
-              <img
-                src={planet.image}
-                className="card-img-top"
-                alt={planet.name}
-                style={{ height: "200px", objectFit: "cover" }}
-              />
-              <div className="card-body">
-                <h5 className="card-title">{planet.name}</h5>
-                <p className="card-text">{planet.description}</p>
+        {planets.map((planet) => {
+          const desc = `Clima: ${planet.properties.climate}, Terreno: ${planet.properties.terrain}, Población: ${planet.properties.population}`;
+          return (
+            <div key={planet.uid} className="col-md-4">
+              <div className="card h-100 shadow-sm bg-dark text-white border-secondary">
+                <div className="card-body">
+                  <h5 className="card-title">{planet.name}</h5>
+                  <p className="card-text">{desc}</p>
+                  <Link
+                    to={`/planets/${planet.uid}`}
+                    className="btn btn-primary me-2"
+                  >
+                    Ver detalles
+                  </Link>
+                  <button className="btn btn-outline-danger">
+                    <i className="fa-solid fa-heart"></i>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
-      <style>{`
-        .hover-card {
-          transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .hover-card:hover {
-          transform: scale(1.05);
-          box-shadow: 0 0.5rem 1rem rgba(255, 255, 255, 0.2);
-        }
-      `}</style>
     </div>
   );
 };

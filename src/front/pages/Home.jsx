@@ -15,10 +15,9 @@ const movies = [
 export const Home = () => {
   return (
     <div className="min-vh-100 bg-dark text-white p-4">
-      <h1 className="text-center text-warning mb-4"> Star Wars Movies</h1>
+      <h1 className="text-center text-warning mb-4">Star Wars Movies</h1>
 
-      {/* Carrusel centrado y al 50% */}
-      <div id="carouselExample" className="carousel slide w-50 mx-auto">
+      <div id="carouselExample" className="carousel slide w-75 mx-auto">
         <div className="carousel-inner">
           {movies.map((movie, index) => (
             <div
@@ -29,16 +28,17 @@ export const Home = () => {
                 className="d-block w-100"
                 src={`https://www.youtube.com/embed/${movie.videoId}`}
                 title={movie.title}
-                style={{ height: "300px", border: "none" }}
+                style={{ height: "400px", border: "none" }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               ></iframe>
               <div className="carousel-caption d-none d-md-block">
-                <h5>{movie.title}</h5>
+                <h5 className="text-warning">{movie.title}</h5>
               </div>
             </div>
           ))}
         </div>
+
         <button
           className="carousel-control-prev"
           type="button"
@@ -48,6 +48,7 @@ export const Home = () => {
           <span className="carousel-control-prev-icon" aria-hidden="true"></span>
           <span className="visually-hidden">Previous</span>
         </button>
+
         <button
           className="carousel-control-next"
           type="button"
